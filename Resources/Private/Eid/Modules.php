@@ -128,21 +128,13 @@ class Modules {
             return [TYPO3_version, '0.0.0'];
         }
 
-        $versionInformation = @json_decode($versionInformationResult, true);
-        $latestStable = explode('.', $versionInformation['latest_stable']);
-        $latestLts = explode('.', $versionInformation['latest_lts']);
-        $latest = $versionInformation['latest_stable'];
+        $myMayorVersion = explode('.', TYPO3_version)[0];
 
-        // for some wired reason the latest LTS version is greater than
-        // the latest stable version. as we are interested in the most recent version
-        // we check which of the twe, lts or stable, is the greatest version number, and return
-        // this version.
-        foreach ($latestStable as $key => $part) {
-            if ($latestLts[$key] > $latestStable[$key]) {
-                $latest = $versionInformation['latest_lts'];
-                break;
-            }
-        }
+        $versionInformation = @json_decode($versionInformationResult, true);
+
+        $sameMajorStable = $versionInformation[$myMayorVersion]['stable'];
+
+        $latest = $sameMajorStable;
 
         return [
             TYPO3_version,
