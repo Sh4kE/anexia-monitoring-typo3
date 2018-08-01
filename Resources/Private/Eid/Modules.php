@@ -119,6 +119,9 @@ class Modules {
      * @return array<string>
      */
     private function getT3Versions() {
+
+
+
         $versionInformationUrl = 'https://get.typo3.org/json';
         $versionInformationResult = GeneralUtility::getUrl($versionInformationUrl);
 
@@ -128,21 +131,12 @@ class Modules {
             return [TYPO3_version, '0.0.0'];
         }
 
+        $myMayorVersion = explode('.', phpversion())[0];
+        
         $versionInformation = @json_decode($versionInformationResult, true);
-        $latestStable = explode('.', $versionInformation['latest_stable']);
-        $latestLts = explode('.', $versionInformation['latest_lts']);
-        $latest = $versionInformation['latest_stable'];
+        $sameMajorStable = explode('.', $versionInformation[$myMayorVersion]['stable']);
 
-        // for some wired reason the latest LTS version is greater than
-        // the latest stable version. as we are interested in the most recent version
-        // we check which of the twe, lts or stable, is the greatest version number, and return
-        // this version.
-        foreach ($latestStable as $key => $part) {
-            if ($latestLts[$key] > $latestStable[$key]) {
-                $latest = $versionInformation['latest_lts'];
-                break;
-            }
-        }
+        $latest = $sameMajorStable;
 
         return [
             TYPO3_version,
