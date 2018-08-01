@@ -119,9 +119,6 @@ class Modules {
      * @return array<string>
      */
     private function getT3Versions() {
-
-
-
         $versionInformationUrl = 'https://get.typo3.org/json';
         $versionInformationResult = GeneralUtility::getUrl($versionInformationUrl);
 
@@ -131,10 +128,11 @@ class Modules {
             return [TYPO3_version, '0.0.0'];
         }
 
-        $myMayorVersion = explode('.', phpversion())[0];
-        
+        $myMayorVersion = explode('.', TYPO3_version)[0];
+
         $versionInformation = @json_decode($versionInformationResult, true);
-        $sameMajorStable = explode('.', $versionInformation[$myMayorVersion]['stable']);
+
+        $sameMajorStable = $versionInformation[$myMayorVersion]['stable'];
 
         $latest = $sameMajorStable;
 
